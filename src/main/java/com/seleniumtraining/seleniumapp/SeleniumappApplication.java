@@ -18,10 +18,10 @@ public class SeleniumappApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args){
+	public void run(String... args) {
 		testService.runTest();
-		
-		for(String arg : args){
+
+		for (String arg : args) {
 			System.out.println("Argumentti: " + arg);
 		}
 	}
