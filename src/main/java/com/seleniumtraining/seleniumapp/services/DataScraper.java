@@ -2,7 +2,6 @@ package com.seleniumtraining.seleniumapp.services;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.*;
@@ -31,9 +30,9 @@ public class DataScraper {
     public void searchCompanyData(WebDriver driver, List<String> yritykset) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
         String status = "";
-        Yritys yritys = new Yritys();
 
         for (String yritysSivu : yritykset) {
+            Yritys yritys = new Yritys();
             String datatype = "";
             String data = "";
             System.out.println(yritysSivu);
@@ -53,44 +52,46 @@ public class DataScraper {
             // haetaan yrityksen tiedot jos yrityksen status on aktiivinen
             if (status.equals("AKTIIVINEN")) {
                 List<WebElement> companyData = driver
-                        .findElements(By.cssSelector("h2#basic-information + ul li"));// span:not(span
-                                                                                      // span):not(span
+                        .findElements(By.cssSelector("h2#basic-information + ul li"));
 
                 System.out.println(companyData.size());
                 for (WebElement dataLine : companyData) {
                     wait.until(ExpectedConditions.visibilityOf(dataLine));
                     String[] typeAndData = dataLine.getText()
+                            // poistetaan turhat tekstit
                             .replace("(YTJ)", "").replace("Katso sijainti kartalta", "")
                             .replace("(Kaupparekisteri)", "").replace("Lue lisää", "").trim().split(":");
+                    try {
+                        datatype = typeAndData[0];
+                        data = typeAndData[1];
 
-                    datatype = typeAndData[0];
-                    data = typeAndData[1];
-
-                    System.out.println(datatype + " " + data);
-
-                    if (datatype.equals("Y-tunnus")) {
-                        System.out.println("Y-tunnus: " + data);
-                        yritys.setyTunnus(data);
-                    } else if (datatype.equals("Yrityksen nimi")) {
-                        System.out.println("Yrityksen nimi: " + data);
-                        yritys.setYritysNimi(data);
-                    } else if (datatype.equals("Toimitusjohtaja")) {
-                        System.out.println("Toimitusjohtaja: " + data);
-                        yritys.setToimitusjohtaja(data);
-                    } else if (datatype.equals("Postiosoite")) {
-                        System.out.println("Postiosoite: " + data);
-                        String[] osoitedata = data.split(",");
-                        yritys.setPostiosoite(osoitedata[0]);
-                        String[] postinumeroJaPostitoimipaikka = osoitedata[1].trim().split(" ");
-                        yritys.setPostinumero(postinumeroJaPostitoimipaikka[0]);
-                        yritys.setPostitoimipaikka(postinumeroJaPostitoimipaikka[1]);
-                    } else if (datatype.equals("Puhelinnumero")) {
-                        System.out.println("Puhelinnumero: " + data);
-                        yritys.setPuhelinnumero(data);
-                    } else if (datatype.equals("Sähköposti")) {
-                        System.out.println("Sähköposti: " + data);
-                        yritys.setSahkoposti(data);
+                        if (datatype.equals("Y-tunnus")) {
+                            System.out.println("Y-tunnus: " + data);
+                            yritys.setyTunnus(data);
+                        } else if (datatype.equals("Yrityksen nimi")) {
+                            System.out.println("Yrityksen nimi: " + data);
+                            yritys.setYritysNimi(data);
+                        } else if (datatype.equals("Toimitusjohtaja")) {
+                            System.out.println("Toimitusjohtaja: " + data);
+                            yritys.setToimitusjohtaja(data);
+                        } else if (datatype.equals("Postiosoite")) {
+                            System.out.println("Postiosoite: " + data);
+                            String[] osoitedata = data.split(",");
+                            yritys.setPostiosoite(osoitedata[0]);
+                            String[] postinumeroJaPostitoimipaikka = osoitedata[1].trim().split(" ");
+                            yritys.setPostinumero(postinumeroJaPostitoimipaikka[0]);
+                            yritys.setPostitoimipaikka(postinumeroJaPostitoimipaikka[1]);
+                        } else if (datatype.equals("Puhelinnumero")) {
+                            System.out.println("Puhelinnumero: " + data);
+                            yritys.setPuhelinnumero(data);
+                        } else if (datatype.equals("Sähköposti")) {
+                            System.out.println("Sähköposti: " + data);
+                            yritys.setSahkoposti(data);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Tietoja ei löytynyt tai tapahtui virhe: " + e);
                     }
+
                 }
 
             }
