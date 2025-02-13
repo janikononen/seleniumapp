@@ -7,12 +7,17 @@ import java.util.List;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seleniumtraining.seleniumapp.domain.Yritys;
+import com.seleniumtraining.seleniumapp.domain.YritysRepository;
 
 @Service
 public class DataScraper {
+
+    @Autowired
+    private YritysRepository yritysRepository;
 
     public List<String> searchCompanyUrls(WebDriver driver, String url) {
         driver.get(url);
@@ -51,16 +56,21 @@ public class DataScraper {
 
             // haetaan yrityksen tiedot jos yrityksen status on aktiivinen
             if (status.equals("AKTIIVINEN")) {
+                yritys.setWwwOsoite(status);
+                yritys.setYritysNimi(
+                        driver.findElement(By.cssSelector(".sc-16wyvoq-1.sc-5564dx-1.bcVLjX.dmajRS")).getText());
+
                 List<WebElement> companyData = driver
                         .findElements(By.cssSelector("h2#basic-information + ul li"));
-
                 System.out.println(companyData.size());
+
                 for (WebElement dataLine : companyData) {
                     wait.until(ExpectedConditions.visibilityOf(dataLine));
                     String[] typeAndData = dataLine.getText()
                             // poistetaan turhat tekstit
                             .replace("(YTJ)", "").replace("Katso sijainti kartalta", "")
-                            .replace("(Kaupparekisteri)", "").replace("Lue lisää", "").trim().split(":");
+                            .replace("(Kaupparekisteri)", "").replace("Lue lisää", "").replace("\n", "").trim()
+                            .split(":");
                     try {
                         datatype = typeAndData[0];
                         data = typeAndData[1];
@@ -81,19 +91,22 @@ public class DataScraper {
                             String[] postinumeroJaPostitoimipaikka = osoitedata[1].trim().split(" ");
                             yritys.setPostinumero(postinumeroJaPostitoimipaikka[0]);
                             yritys.setPostitoimipaikka(postinumeroJaPostitoimipaikka[1]);
-                        } else if (datatype.equals("Puhelinnumero")) {
+                        } else if (datatype.equals("Puhelin")) {
                             System.out.println("Puhelinnumero: " + data);
                             yritys.setPuhelinnumero(data);
                         } else if (datatype.equals("Sähköposti")) {
                             System.out.println("Sähköposti: " + data);
                             yritys.setSahkoposti(data);
+                        } else if (datatype.equals("Toimialakuvaus")) {
+                            System.out.println("Toimialakuvaus: " + data);
+                            yritys.setToimialakuvaus(data);
                         }
                     } catch (Exception e) {
                         System.out.println("Tietoja ei löytynyt tai tapahtui virhe: " + e);
                     }
 
                 }
-
+                yritysRepository.save(yritys);
             }
         }
     }

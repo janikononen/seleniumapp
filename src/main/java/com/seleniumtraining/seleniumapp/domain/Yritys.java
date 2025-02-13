@@ -2,6 +2,7 @@ package com.seleniumtraining.seleniumapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,8 @@ public class Yritys {
     private String postitoimipaikka = "";
     private String puhelinnumero = "";
     private String sahkoposti = "";
+    @Column(length = 1000)
+    private String toimialakuvaus = "";
     private String wwwOsoite = "";
 
     @ManyToOne
@@ -34,6 +37,7 @@ public class Yritys {
 
     public Yritys(String yritysNimi, String toimitusjohtaja, String yTunnus, String postiosoite,
             String postinumero, String postitoimipaikka, String puhelinnumero, String sahkoposti, String wwwOsoite,
+            String toimialakuvaus,
             InterestStatus interestStatus) {
         this.yritysNimi = yritysNimi;
         this.toimitusjohtaja = toimitusjohtaja;
@@ -44,6 +48,7 @@ public class Yritys {
         this.puhelinnumero = puhelinnumero;
         this.sahkoposti = sahkoposti;
         this.wwwOsoite = wwwOsoite;
+        this.toimialakuvaus = toimialakuvaus;
         this.interestStatus = interestStatus;
     }
 
@@ -121,6 +126,14 @@ public class Yritys {
 
     public void setWwwOsoite(String wwwOsoite) {
         this.wwwOsoite = wwwOsoite;
+    }
+
+    public String getToimialakuvaus() {
+        return toimialakuvaus;
+    }
+
+    public void setToimialakuvaus(String toimialakuvaus) {
+        this.toimialakuvaus = toimialakuvaus;
     }
 
     public InterestStatus getInterestStatus() {
