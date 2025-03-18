@@ -48,7 +48,7 @@ public class DataScraper {
 
             // haetaan yrityksen status
             try {
-                status = driver.findElement(By.cssSelector(".sc-5564dx-3.hfOAuF")).getText();
+                status = driver.findElement(By.cssSelector(".sc-5564dx-3.lnxvuP")).getText();
             } catch (Exception e) {
                 status = driver.findElement(By.cssSelector(".sc-5564dx-3.eZHZlC")).getText();
             }
@@ -56,20 +56,29 @@ public class DataScraper {
 
             // haetaan yrityksen tiedot jos yrityksen status on aktiivinen
             if (status.equals("AKTIIVINEN")) {
-                yritys.setWwwOsoite(status);
-                yritys.setYritysNimi(
-                        driver.findElement(By.cssSelector(".sc-16wyvoq-1.sc-5564dx-1.bcVLjX.dmajRS")).getText());
+                yritys.setWwwOsoite(yritysSivu);
+                String[] yritysotsikko = driver.findElement(By.cssSelector(".sc-16wyvoq-1.sc-5564dx-1.iFCgCK.gpFhZT"))
+                        .getText().split("\n");
+                yritys.setYritysNimi(yritysotsikko[0].trim());
+                System.out.println(yritys.getYritysNimi());
 
                 List<WebElement> companyData = driver
                         .findElements(By.cssSelector("h2#basic-information + ul li"));
                 System.out.println(companyData.size());
+                try {
+                    WebElement luelisää = driver.findElement(By.cssSelector(".sc-pek81u-0.kErPiI.sc-pymjmu-2.fqoWtH"));
+                    luelisää.click();
+                } catch (Exception e) {
+                    System.out.println("ei lue lisää painiketta");
+                }
 
                 for (WebElement dataLine : companyData) {
                     wait.until(ExpectedConditions.visibilityOf(dataLine));
                     String[] typeAndData = dataLine.getText()
                             // poistetaan turhat tekstit
                             .replace("(YTJ)", "").replace("Katso sijainti kartalta", "")
-                            .replace("(Kaupparekisteri)", "").replace("Lue lisää", "").replace("\n", "").trim()
+                            .replace("(Kaupparekisteri)", "").replace("\n", "").replace("Piilota", "")
+                            .replace("Lue lisää", "").replace("(PRH)", "").trim()
                             .split(":");
                     try {
                         datatype = typeAndData[0];

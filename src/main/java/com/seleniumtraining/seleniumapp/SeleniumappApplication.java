@@ -28,14 +28,23 @@ public class SeleniumappApplication implements CommandLineRunner {
 	public void run(String... args) {
 		WebDriver driver = driverManager.startDriver();
 		try {
-			for (int i = 1; i <= 1; i++) {
-				String url = "https://www.kauppalehti.fi/yritykset/toimialat/muualla-luokittelematon-majoitustoiminta/55909?page="
-						+ i;
-				List<String> urList = scraper.searchCompanyUrls(driver, url);
-				scraper.searchCompanyData(driver, urList);
-			}
+			// testidata
+			List<String> urList = List.of("https://www.kauppalehti.fi/yritykset/yritys/09514243",
+					"https://www.kauppalehti.fi/yritykset/yritys/32176748",
+					"https://www.kauppalehti.fi/yritykset/yritys/31706313");
+			scraper.searchCompanyData(driver, urList);
 		} finally {
 			driverManager.stopDriver();
 		}
 	}
 }
+// tämä lisätään kun aletaan keräämään enemmän tietoa
+/*
+ * for (int i = 2; i <= 2; i++) {
+ * String url =
+ * "https://www.kauppalehti.fi/yritykset/toimialat/muualla-luokittelematon-majoitustoiminta/55909?page="
+ * + i;
+ * List<String> urList = scraper.searchCompanyUrls(driver, url);
+ * scraper.searchCompanyData(driver, urList);
+ * }
+ */

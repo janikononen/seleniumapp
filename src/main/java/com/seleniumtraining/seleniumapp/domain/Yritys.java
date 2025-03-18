@@ -1,14 +1,10 @@
 package com.seleniumtraining.seleniumapp.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Yritys {
@@ -23,14 +19,10 @@ public class Yritys {
     private String postitoimipaikka = "";
     private String puhelinnumero = "";
     private String sahkoposti = "";
-    @Column(length = 1000)
+    @Column(length = 5000)
     private String toimialakuvaus = "";
     private String wwwOsoite = "";
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "interestStatus_id")
-    private InterestStatus interestStatus = null;
+    private InterestStatusType interestStatus = null;
 
     public Yritys() {
     }
@@ -38,7 +30,7 @@ public class Yritys {
     public Yritys(String yritysNimi, String toimitusjohtaja, String yTunnus, String postiosoite,
             String postinumero, String postitoimipaikka, String puhelinnumero, String sahkoposti, String wwwOsoite,
             String toimialakuvaus,
-            InterestStatus interestStatus) {
+            InterestStatusType interestStatus) {
         this.yritysNimi = yritysNimi;
         this.toimitusjohtaja = toimitusjohtaja;
         this.yTunnus = yTunnus;
@@ -136,11 +128,11 @@ public class Yritys {
         this.toimialakuvaus = toimialakuvaus;
     }
 
-    public InterestStatus getInterestStatus() {
+    public InterestStatusType getInterestStatus() {
         return interestStatus;
     }
 
-    public void setInterestStatus(InterestStatus interestStatus) {
+    public void setInterestStatus(InterestStatusType interestStatus) {
         this.interestStatus = interestStatus;
     }
 

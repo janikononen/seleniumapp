@@ -9,7 +9,7 @@ import com.seleniumtraining.seleniumapp.domain.YritysRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/yritykset")
+@RequestMapping("/api/yritykset")
 public class YritysController {
 
     private YritysRepository yritysRepository;
